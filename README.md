@@ -1,10 +1,8 @@
-#socialregulator
-
 The aim of this work is to develop a social and emotional regulation network using a prototype platform for detecting, tracking, and classifying (DTC) fully context-based social data. The platform is envisioned to provide a unified, multi-domain sensor-based API, which integrates sensor inputs into social primitives using specially refined and filtered data streams with both integrated and specialized neural networks across text, image and audio domains, for the social regulation framework.
 
 Phase One: Real-time DTC is expected for the hardware, in which a database of social primitives is populated.
 
-Phase Two: Real-time integration -- a real-time socioemotional response to the social primitives database -- will follow maturation of an appropriate training dataset.
+Phase Two: Real-time integration -- a real-time socioemotional response to the social primitives database -- will follow maturation of an appropriate training dataset. The method of integration will make use of a library of conservation laws that are an encoding of psychological concepts with the intent of intuiting psychological states from the available social and emotional data on the fastest necessary timescales.
 
 Phase Three: Design, development, and testing of a regulation mechanism for the socioemotional response for application purposes. In the most general sense, this, say, social regulation network, must identify at least one homotopy (discretized at an appropriate resolution) for the human identity under consideration. The homotopy describes the current psychological state for the human identity, a future psychological state, and the sequence of intermediate states together with a description of transforms for the state maps that specify what social and emotional input from the artificial intelligence is needed in order to transform between two computed states. Various feedback mechanisms for refinement of the predictions would also be implemented as needed dependent upon measured outcomes as observed in the social primitives database.
 
