@@ -1,3 +1,5 @@
+Andrew is: A neural Network for Detection, classification, tracking, and Regulation of Emotional Warfare.
+
 Product Aim.
 
 The aim of this work is to develop a social and emotional regulation network using a prototype platform for detecting, tracking, and classifying (DTC) fully context-based socioemotional data. The platform is envisioned to provide a unified, multi-domain sensor-based API, which integrates sensor inputs into social and emotional primitives using specially refined and filtered data streams with both integrated and specialized neural networks across text, image and audio domains, for the social regulation framework.
