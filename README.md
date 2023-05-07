@@ -1,4 +1,4 @@
-Andrew is: A neural Network for Detection, classification, tracking, and Regulation of Emotional Warfare.
+Andrew is: A neural Network for Detection, tracking, classification, and Regulation of Emotional Warfare.
 
 Product Aim.
 
