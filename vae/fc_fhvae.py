@@ -147,6 +147,8 @@ class FCFacHierVAE(BaseFacHierVAE):
         
         return [z2_mu, z2_logvar], z2
 
+    #TODO: Define template for _build_zn_encoder here.
+
     def _build_decoder(self, z1, z2, reuse=False):
         weights_regularizer = l2_regularizer(self._train_conf["l2_weight"])
         normalizer_fn = batch_norm if self._model_conf["if_bn"] else None
