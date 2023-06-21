@@ -154,6 +154,8 @@ class BaseFacHierVAE(object):
         qz2_x, sampled_z2 = self._build_z2_encoder(inputs, sampled_z1)
         px_z, sampled_x = self._build_decoder(sampled_z1, sampled_z2)
 
+        #TODO: Add lookup table for qzn_x, n >= 3 and associated sampled_zn, n >= 3.
+
         with tf.name_scope("costs"):
             # labeled data costs
             with tf.name_scope("log_pmu1"):
