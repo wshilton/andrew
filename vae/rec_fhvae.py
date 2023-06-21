@@ -354,6 +354,8 @@ class RecFacHierVAE(BaseFacHierVAE):
         
         return [z2_mu, z2_logvar], z2
 
+    #TODO: Define template for _build_zn_encoder here.
+
     def _build_rnn_decoder_and_recon_x(
             self, inputs, targets, training, reuse=False):
         with tf.variable_scope("dec_rec_and_recon_x", reuse=reuse):
