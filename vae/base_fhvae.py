@@ -85,6 +85,7 @@ class BaseFacHierVAE(object):
                             "n_latent2": 64,
                             "n_latent3": 64,
                             "n_class1": None,
+                            "n_class3": None,
                             "latent1_std": 0.5,
                             "latent3_std": 0.5,
                             "x_conti": True,
@@ -255,6 +256,7 @@ class BaseFacHierVAE(object):
                 "log_pmu1": log_pmu1,
                 "neg_kld_z1": neg_kld_z1,
                 "neg_kld_z2": neg_kld_z2,
+                "neg_kld_z3": neg_kld_z3,
                 "logpx_z": logpx_z,
                 "log_qy1": log_qy1,
                 "lb": lb,
@@ -312,6 +314,10 @@ class BaseFacHierVAE(object):
         
     def _build_z1_encoder(self, inputs, reuse=False):
         """return q(z1 | x), sampled_z1"""
+        raise NotImplementedError
+
+    def _build_z3_encoder(self, inputs, reuse=False):
+        """return q(z3 | x), sampled_z3"""
         raise NotImplementedError
 
     def _build_mu1_lookup(self, labels, reuse=False):
