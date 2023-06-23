@@ -95,11 +95,15 @@ class RecFacHierVAE(BaseFacHierVAE):
                     without supervision
                 - n_latent3: number of latent variables 
                     with partial supervision
-                - n_class1: number of different mu1 in the 
+                - n_class1: number of different mu1 in a 
+                    supervised partition
+                - n_class3: number of different mu1 in a 
                     supervised partition
                 - latent1_std: std for p(z1 | mu1)
+                - latent3_std: std for p(z1 | mu3)
                 - z1_logvar_nl:
                 - z2_logvar_nl: 
+                - z3_logvar_nl: 
                 - x_conti: whether target is continuous or discrete
                     use Gaussian for continuous target, softmax
                     for discrete target
@@ -141,7 +145,9 @@ class RecFacHierVAE(BaseFacHierVAE):
                             "n_latent2": 64,
                             "n_latent3": 64,
                             "n_class1": None,
+                            "n_class3": None,
                             "latent1_std": 0.5,
+                            "latent3_std": 0.5,
                             "z1_logvar_nl": None,
                             "z2_logvar_nl": None,
                             "z3_logvar_nl": None,
