@@ -66,6 +66,11 @@ class RecFacHierVAE(BaseFacHierVAE):
                 - rec_z2_enc_out: 
                 - rec_z2_enc_bi: 
                 - hu_z2_enc: 
+                - rec_z3_enc: 
+                - rec_z3_enc_concur: 
+                - rec_z3_enc_out: 
+                - rec_z3_enc_bi: 
+                - hu_z3_enc: 
                 - hu_dec: list of int of number of hidden 
                     units at each layer for decoder. do not
                     specify if using symmetric architecture
@@ -88,6 +93,8 @@ class RecFacHierVAE(BaseFacHierVAE):
                     with partial supervision
                 - n_latent2: number of latent variables 
                     without supervision
+                - n_latent3: number of latent variables 
+                    with partial supervision
                 - n_class1: number of different mu1 in the 
                     supervised partition
                 - latent1_std: std for p(z1 | mu1)
@@ -118,6 +125,11 @@ class RecFacHierVAE(BaseFacHierVAE):
                             "rec_z2_enc_out": "last_hc",
                             "rec_z2_enc_bi": False,
                             "hu_z2_enc": [],
+                            "rec_z3_enc": [],
+                            "rec_z3_enc_concur": 1,
+                            "rec_z3_enc_out": "last_hc",
+                            "rec_z3_enc_bi": False,
+                            "hu_z3_enc": [],
                             "hu_dec": [],
                             "rec_dec": [],
                             "rec_dec_bi": False,
@@ -127,10 +139,12 @@ class RecFacHierVAE(BaseFacHierVAE):
                             "rec_dec_inp_hist": 1,
                             "n_latent1": 64,
                             "n_latent2": 64,
+                            "n_latent3": 64,
                             "n_class1": None,
                             "latent1_std": 0.5,
                             "z1_logvar_nl": None,
                             "z2_logvar_nl": None,
+                            "z3_logvar_nl": None,
                             "x_conti": True,
                             "x_mu_nl": None,
                             "x_logvar_nl": None,
@@ -246,6 +260,105 @@ class RecFacHierVAE(BaseFacHierVAE):
                     reuse=reuse, scope="z1_enc_lat")
 
         return [z1_mu, z1_logvar], z1
+
+    def _build_z3_encoder(self, inputs, reuse=False):
+        weights_regularizer = l2_regularizer(self._train_conf["l2_weight"])
+        normalizer_fn = batch_norm if self._model_conf["if_bn"] else None
+        normalizer_params = None
+        if self._model_conf["if_bn"]:
+            normalizer_params = {"scope": "BatchNorm",
+                                 "is_training": self._feed_dict["is_train"], 
+                                 "reuse": reuse}
+            # TODO: need to upgrade to latest, 
+            #       which commit support param_regularizers args
+
+        if not hasattr(self, "_debug_outputs"):
+            self._debug_outputs = {}
+
+        C, T, F = self._model_conf["target_shape"]
+        n_concur = self._model_conf["rec_z3_enc_concur"]
+        if T % n_concur != 0:
+            raise ValueError("total time steps must be multiples of %s" % (
+                n_concur))
+        n_frame = T // n_concur
+        info("z3_encoder: n_frame=%s, n_concur=%s" % (n_frame, n_concur))
+
+        with tf.variable_scope("z3_enc", reuse=reuse):
+            # recurrent layers
+            if self._model_conf["rec_z3_enc"]:
+                # reshape to (N, n_frame, n_concur*C*F)
+                inputs = array_ops.transpose(inputs, (0, 2, 1, 3))
+                inputs_shape = inputs.get_shape().as_list()
+                inputs_depth = np.prod(inputs_shape[2:])
+                new_shape = (-1, n_frame,  n_concur * inputs_depth)
+                inputs = tf.reshape(inputs, new_shape)
+
+                self._debug_outputs["inp_reshape"] = inputs
+                if self._model_conf["rec_z3_enc_bi"]:
+                    raise NotImplementedError
+                else:
+                    Cell = _cell_dict[self._model_conf["rec_cell_type"]]
+                    cell = MultiRNNCell([Cell(hu) \
+                            for hu in self._model_conf["rec_z3_enc"]])
+
+                    if self._model_conf["rec_learn_init"]:
+                        raise NotImplementedError
+                    else:
+                        input_shape = tuple(array_ops.shape(input_) \
+                                for input_ in nest.flatten(inputs))
+                        batch_size = input_shape[0][0]
+                        init_state = cell.zero_state(
+                                batch_size, self._model_conf["input_dtype"])
+
+                    _, final_states = dynamic_rnn(
+                            cell, 
+                            inputs,
+                            dtype=self._model_conf["input_dtype"],
+                            initial_state=init_state,
+                            time_major=False,
+                            scope="z3_enc_%sL_rec" % len(
+                                self._model_conf["rec_z3_enc"]))
+                    self._debug_outputs["raw_rnn_out"] = _
+                    self._debug_outputs["raw_rnn_final"] = final_states
+
+                    if self._model_conf["rec_z3_enc_out"].startswith("last"):
+                        final_states = final_states[-1:]
+
+                    if self._model_conf["rec_cell_type"] == "lstm":
+                        outputs = []
+                        for state in final_states:
+                            if "h" in self._model_conf["rec_z3_enc_out"].split("_")[1]:
+                                outputs.append(state.h)
+                            if "c" in self._model_conf["rec_z3_enc_out"].split("_")[1]:
+                                outputs.append(state.c)
+                    else:
+                        outputs = final_states
+
+                    outputs = tf.concat(outputs, axis=-1)
+                    self._debug_outputs["concat_rnn_out"] = outputs
+            else:
+                outputs = inputs
+
+            # fully connected layers
+            output_dim = np.prod(outputs.get_shape().as_list()[1:])
+            outputs = tf.reshape(outputs, [-1, output_dim])
+
+            for i, hu in enumerate(self._model_conf["hu_z3_enc"]):
+                outputs = fully_connected(inputs=outputs,
+                                          num_outputs=hu,
+                                          activation_fn=nn.relu,
+                                          normalizer_fn=normalizer_fn,
+                                          normalizer_params=normalizer_params,
+                                          weights_regularizer=weights_regularizer,
+                                          reuse=reuse,
+                                          scope="z3_enc_fc%s" % (i + 1))
+
+            z3_mu, z3_logvar, z3 = dense_latent(
+                    outputs, self._model_conf["n_latent3"], 
+                    logvar_nl=self._model_conf["z3_logvar_nl"],
+                    reuse=reuse, scope="z3_enc_lat")
+
+        return [z3_mu, z3_logvar], z3
 
     def _build_z2_encoder(self, inputs, z1, reuse=False):
         weights_regularizer = l2_regularizer(self._train_conf["l2_weight"])
@@ -498,7 +611,7 @@ class RecFacHierVAE(BaseFacHierVAE):
 
         return outputs, px, x
 
-    def _build_decoder(self, z1, z2, reuse=False):
+    def _build_decoder(self, z1, z2, z3 reuse=False):
         # consider include ``target'' into args, 
         # since it may be used during training
         weights_regularizer = l2_regularizer(self._train_conf["l2_weight"])
@@ -511,7 +624,7 @@ class RecFacHierVAE(BaseFacHierVAE):
             # TODO: need to upgrade to latest, which 
             #       commit support param_regularizers args
 
-        outputs = tf.concat([z1, z2], axis=1)
+        outputs = tf.concat([z1, z2, z3], axis=1)
         with tf.variable_scope("dec", reuse=reuse):
             for i, hu in enumerate(self._model_conf["hu_dec"]):
                 outputs = fully_connected(inputs=outputs,
