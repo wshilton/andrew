@@ -215,6 +215,8 @@ class BaseFacHierVAE(object):
                 logits = tf.reduce_sum(logits, axis=-1, name="qy1_logits")
                 log_qy1 = -sce_logits(labels=labels, logits=logits)
 
+            latent3_var = tf.pow(self._model_conf["latent3_std"], 2, name="latent3_var")
+
             with tf.name_scope("log_qy3"):
                 # -(z3 - z3_mu3)^2/z3_var
                 logits = tf.expand_dims(qz3_x[0], 1) - tf.expand_dims(mu3_table, 0)
@@ -224,7 +226,8 @@ class BaseFacHierVAE(object):
 
             with tf.name_scope("lb"):
                 # original variational lower bound for labeled data
-                lb = logpx_z + neg_kld_z2 + neg_kld_z1 + neg_kld_z3 + (log_pmu1 / N)
+                # TODO: Ensure sizes associated with third scale agree with this normalization
+                lb = logpx_z + neg_kld_z2 + neg_kld_z1 + neg_kld_z3 + ((log_pmu1 + log_pmu3)/ N) 
 
             #TODO: Rename following var in lieu of generalization
             with tf.name_scope("lb_alpha"):
