@@ -41,7 +41,9 @@ class FCFacHierVAE(BaseFacHierVAE):
                     with partial supervision
                 - n_latent2: number of latent variables 
                     without supervision
-                - n_class1: number of different mu1 in the 
+                - n_class1: number of different mu1 in a 
+                    supervised partition
+                - n_class3: number of different mu3 in a 
                     supervised partition
                 - latent1_std: std for p(z1 | mu1)
                 - z1_logvar_nl:
@@ -67,6 +69,7 @@ class FCFacHierVAE(BaseFacHierVAE):
                             "n_latent2": 64,
                             "n_latent3": 64,
                             "n_class1": None,
+                            "n_class3": None,
                             "latent1_std": 0.5,
                             "z1_logvar_nl": None,
                             "z3_logvar_nl": None,
