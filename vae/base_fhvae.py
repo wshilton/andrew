@@ -86,6 +86,7 @@ class BaseFacHierVAE(object):
                             "n_latent3": 64,
                             "n_class1": None,
                             "latent1_std": 0.5,
+                            "latent3_std": 0.5,
                             "x_conti": True,
                             "x_mu_nl": None,
                             "x_logvar_nl": None,
@@ -164,6 +165,9 @@ class BaseFacHierVAE(object):
             # labeled data costs
             with tf.name_scope("log_pmu1"):
                 log_pmu1 = tf.reduce_sum(log_normal(mu1), axis=1)
+
+            with tf.name_scope("log_pmu3"):
+                log_pmu3 = tf.reduce_sum(log_normal(mu3), axis=1)
             
             with tf.name_scope("neg_kld_z1"):
                 logvar1 = tf.ones_like(mu1) * \
@@ -172,6 +176,14 @@ class BaseFacHierVAE(object):
                         np.log(np.power(self._model_conf["latent1_std"], 2))))
                 pz1 = [mu1, logvar1]
                 neg_kld_z1 = tf.reduce_sum(-1 * kld(*(qz1_x + pz1)), axis=1)
+
+            with tf.name_scope("neg_kld_z3"):
+                logvar1 = tf.ones_like(mu3) * \
+                        np.log(np.power(self._model_conf["latent3_std"], 2))
+                info("logvar of z3 given mu3 is %s" % (
+                        np.log(np.power(self._model_conf["latent3_std"], 2))))
+                pz3 = [mu3, logvar1]
+                neg_kld_z3 = tf.reduce_sum(-1 * kld(*(qz3_x + pz3)), axis=1)
 
             with tf.name_scope("neg_kld_z2"):
                 neg_kld_z2 = tf.reduce_sum(-1 * kld(*qz2_x), axis=1)
@@ -194,6 +206,7 @@ class BaseFacHierVAE(object):
             
             latent1_var = tf.pow(self._model_conf["latent1_std"], 2, name="latent1_var")
 
+            #TODO: consider how to extent the following with third scale
             with tf.name_scope("log_qy1"):
                 # -(z2 - z2_mu2)^2/z2_var
                 logits = tf.expand_dims(qz1_x[0], 1) - tf.expand_dims(mu1_table, 0)
@@ -313,12 +326,24 @@ class BaseFacHierVAE(object):
                 mu1 = tf.gather(mu1_table, labels)
         return mu1_table, mu1
 
-    def _build_z2_encoder(self, inputs, z1, reuse=False):
-        """return q(z2 | x, z1), sampled_z2"""
+    def _build_mu3_lookup(self, labels, reuse=False):
+        n_class1 = self._model_conf["n_class1"]
+        n_latent1 = self._model_conf["n_latent1"]
+        with tf.variable_scope("mu3", reuse=reuse):
+            with tf.device("/cpu:0"):
+                mu3_table = tf.get_variable(
+                        name="mu3_table", 
+                        trainable=True,
+                        initializer=tf.random_normal([n_class3, n_latent3]))
+                mu3 = tf.gather(mu3_table, labels)
+        return mu3_table, mu3
+
+    def _build_z2_encoder(self, inputs, z1, z3, reuse=False):
+        """return q(z2 | x, z1, z3), sampled_z2"""
         raise NotImplementedError
 
-    def _build_decoder(self, z1, z2, reuse=False):
-        """return p(x | z1, z2), sampled_x"""
+    def _build_decoder(self, z1, z2, z3, reuse=False):
+        """return p(x | z1, z2, z3), sampled_x"""
         raise NotImplementedError
 
     def init_or_restore_model(self, sess, model_dir):
