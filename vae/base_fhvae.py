@@ -99,6 +99,7 @@ class BaseFacHierVAE(object):
                             "lr_decay_factor": 0.8,
                             "l2_weight": 0.0001,
                             "alpha_dis": 1,
+                            "beta_dis": 1,
                             "max_grad_norm": None,
                             "opt": "adam",
                             "opt_opts": {}}
@@ -207,7 +208,6 @@ class BaseFacHierVAE(object):
             
             latent1_var = tf.pow(self._model_conf["latent1_std"], 2, name="latent1_var")
 
-            #TODO: consider how to extent the following with third scale
             with tf.name_scope("log_qy1"):
                 # -(z2 - z2_mu2)^2/z2_var
                 logits = tf.expand_dims(qz1_x[0], 1) - tf.expand_dims(mu1_table, 0)
@@ -215,18 +215,27 @@ class BaseFacHierVAE(object):
                 logits = tf.reduce_sum(logits, axis=-1, name="qy1_logits")
                 log_qy1 = -sce_logits(labels=labels, logits=logits)
 
+            with tf.name_scope("log_qy3"):
+                # -(z3 - z3_mu3)^2/z3_var
+                logits = tf.expand_dims(qz3_x[0], 1) - tf.expand_dims(mu3_table, 0)
+                logits = -tf.pow(logits, 2) / (2 * latent3_var)
+                logits = tf.reduce_sum(logits, axis=-1, name="qy3_logits")
+                log_qy3 = -sce_logits(labels=labels, logits=logits)
+
             with tf.name_scope("lb"):
                 # original variational lower bound for labeled data
-                lb = logpx_z + neg_kld_z2 + neg_kld_z1 + (log_pmu1 / N)
+                lb = logpx_z + neg_kld_z2 + neg_kld_z1 + neg_kld_z3 + (log_pmu1 / N)
 
+            #TODO: Rename following var in lieu of generalization
             with tf.name_scope("lb_alpha"):
                 # combine an additional weighted loss term
                 alpha = self._train_conf["alpha_dis"]
+                beta  = self._train_conf["beta_dis"]
                 if alpha == 0.0:
                     lb_alpha = lb
                     info("use non-discriminative training")
                 else:
-                    lb_alpha = lb + alpha * log_qy1
+                    lb_alpha = lb + alpha * log_qy1 + beta * log_qy3
                     info("use discriminative training")
 
             # L2 regularization
