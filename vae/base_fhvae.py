@@ -83,6 +83,7 @@ class BaseFacHierVAE(object):
                             "target_dtype": tf.float32,
                             "n_latent1": 64,
                             "n_latent2": 64,
+                            "n_latent3": 64,
                             "n_class1": None,
                             "latent1_std": 0.5,
                             "x_conti": True,
@@ -151,10 +152,13 @@ class BaseFacHierVAE(object):
 
         qz1_x, sampled_z1 = self._build_z1_encoder(inputs)
         mu1_table, mu1 = self._build_mu1_lookup(labels)
-        qz2_x, sampled_z2 = self._build_z2_encoder(inputs, sampled_z1)
-        px_z, sampled_x = self._build_decoder(sampled_z1, sampled_z2)
 
-        #TODO: Add lookup table for qzn_x, n >= 3 and associated sampled_zn, n >= 3.
+        qz3_x, sampled_z3 = self._build_z3_encoder(inputs)
+        mu3_table, mu3 = self._build_mu3_lookup(labels)
+        
+        qz2_x, sampled_z2 = self._build_z2_encoder(inputs, sampled_z1, sampled_z3)
+        
+        px_z, sampled_x = self._build_decoder(sampled_z1, sampled_z2, sampled_z3)
 
         with tf.name_scope("costs"):
             # labeled data costs
@@ -227,9 +231,11 @@ class BaseFacHierVAE(object):
                 # random variables/distributions
                 "mu1": mu1,
                 "qz1_x": qz1_x,
+                "qz3_x": qz3_x,
                 "qz2_x": qz2_x,
                 "px_z": px_z,
                 "sampled_z1": sampled_z1,
+                "sampled_z3": sampled_z3,
                 "sampled_z2": sampled_z2,
                 "sampled_x": sampled_x,
                 # costs
