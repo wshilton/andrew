@@ -150,7 +150,7 @@ class FCFacHierVAE(BaseFacHierVAE):
 
         return [z1_mu, z1_logvar], z1
 
-    def _build_z2_encoder(self, inputs, z1, reuse=False):
+    def _build_z2_encoder(self, inputs, z1, z3, reuse=False):
         weights_regularizer = l2_regularizer(self._train_conf["l2_weight"])
         normalizer_fn = batch_norm if self._model_conf["if_bn"] else None
         normalizer_params = None
@@ -162,7 +162,7 @@ class FCFacHierVAE(BaseFacHierVAE):
             #       which commit support param_regularizers args
 
         input_dim = np.prod(inputs.get_shape().as_list()[1:])
-        outputs = tf.concat([tf.reshape(inputs, [-1, input_dim]), z1], axis=1)
+        outputs = tf.concat([tf.reshape(inputs, [-1, input_dim]), tf.concat(z1,z3)], axis=1)
         with tf.variable_scope("z2_enc", reuse=reuse):
             for i, hu in enumerate(self._model_conf["hu_z2_enc"]):
                 outputs = fully_connected(inputs=outputs,
@@ -183,7 +183,7 @@ class FCFacHierVAE(BaseFacHierVAE):
 
     #TODO: Define template for _build_zn_encoder here.
 
-    def _build_decoder(self, z1, z2, reuse=False):
+    def _build_decoder(self, z1, z2, z3, reuse=False):
         weights_regularizer = l2_regularizer(self._train_conf["l2_weight"])
         normalizer_fn = batch_norm if self._model_conf["if_bn"] else None
         normalizer_params = None
@@ -194,7 +194,7 @@ class FCFacHierVAE(BaseFacHierVAE):
             # TODO: need to upgrade to latest, which 
             #       commit support param_regularizers args
 
-        outputs = tf.concat([z1, z2], axis=1)
+        outputs = tf.concat([z1, z2, z3], axis=1)
         with tf.variable_scope("dec", reuse=reuse):
             for i, hu in enumerate(self._model_conf["hu_dec"]):
                 outputs = fully_connected(inputs=outputs,
