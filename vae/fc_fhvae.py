@@ -71,6 +71,7 @@ class FCFacHierVAE(BaseFacHierVAE):
                             "n_class1": None,
                             "n_class3": None,
                             "latent1_std": 0.5,
+                            "latent3_std": 0.5,
                             "z1_logvar_nl": None,
                             "z3_logvar_nl": None,
                             "z2_logvar_nl": None,
@@ -212,6 +213,7 @@ class FCFacHierVAE(BaseFacHierVAE):
             target_shape = list(self._model_conf["target_shape"])
             target_dim = np.prod(target_shape)
 
+            #TODO: Consider how to refactor the following (if at all) given that there are now two target means.
             if self._model_conf["x_conti"]:
                 mu_nl = self._model_conf["x_mu_nl"]
                 logvar_nl = self._model_conf["x_logvar_nl"]
