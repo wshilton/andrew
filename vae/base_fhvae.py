@@ -345,8 +345,8 @@ class BaseFacHierVAE(object):
         return mu1_table, mu1
 
     def _build_mu3_lookup(self, labels, reuse=False):
-        n_class1 = self._model_conf["n_class1"]
-        n_latent1 = self._model_conf["n_latent1"]
+        n_class3 = self._model_conf["n_class3"]
+        n_latent3 = self._model_conf["n_latent3"]
         with tf.variable_scope("mu3", reuse=reuse):
             with tf.device("/cpu:0"):
                 mu3_table = tf.get_variable(
