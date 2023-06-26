@@ -473,8 +473,6 @@ class RecFacHierVAE(BaseFacHierVAE):
         
         return [z2_mu, z2_logvar], z2
 
-    #TODO: Define template for _build_zn_encoder here.
-
     def _build_rnn_decoder_and_recon_x(
             self, inputs, targets, training, reuse=False):
         with tf.variable_scope("dec_rec_and_recon_x", reuse=reuse):
@@ -523,6 +521,7 @@ class RecFacHierVAE(BaseFacHierVAE):
                     else:
                         return new_hist[:, :, -n_hist:, :]
 
+                #TODO: Consider how to refactor the following (if at all) given that there are now two target means.
             outputs = []
             if self._model_conf["x_conti"]:
                 x_mu, x_logvar, x = [], [], []
@@ -548,6 +547,7 @@ class RecFacHierVAE(BaseFacHierVAE):
                 outputs.append(output_f)
                 
                 # TODO: input hist as well (like sampleRNN)?
+                #TODO: Consider how to refactor the following (if at all) given that there are now two target means.
                 if self._model_conf["x_conti"]:
                     x_mu_f, x_logvar_f, x_f = dense_latent(
                             inputs=output_f, 
