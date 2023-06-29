@@ -441,7 +441,7 @@ def traverse(exp_dir, model, dataset, img_dir, opts=DEFAULT_TRAV_OPT):
             seed_data, _, _, _ = dataset.sample_item(seed_utt, 1)
 
         #TODO: Determine how to incorporate traversal in higher dimensions
-        trav_z1_grids, trav_z2_grids = _traverse(
+        trav_z1_grids, trav_z2_grids, trav_z3_grids = _traverse(
                 sess, model, seed_data, opts["k"], opts["trav_range"])
 
     check_and_makedirs(img_dir)
@@ -693,6 +693,7 @@ def _traverse_dim(sess, model, seed_z1s, seed_z2s, seed_z3s, data_shape, trav_va
                 feed_dict={
                     model.outputs["sampled_z1"]: flat_trav_z1s,
                     model.outputs["sampled_z2"]: flat_fixed_z2s,
+                    
                     model.feed_dict["is_train"]: 0})
     elif which == "z2":
         flat_trav_z2s, flat_fixed_z1s = \
@@ -702,6 +703,17 @@ def _traverse_dim(sess, model, seed_z1s, seed_z2s, seed_z3s, data_shape, trav_va
                 feed_dict={
                     model.outputs["sampled_z1"]: flat_fixed_z1s,
                     model.outputs["sampled_z2"]: flat_trav_z2s,
+                    model.outputs["sampled_z3"]: flat_trav_z3s,
+                    model.feed_dict["is_train"]: 0})
+    elif which == "z3":
+        flat_trav_z3s, flat_trav_z2s, flat_fixed_z1s = \
+                gen_flat_trav_and_fixed_lats(seed_z3s, seed_z2s, seed_z1s)
+        flat_trav_data = sess.run(
+                model.outputs["px_z"][0],
+                feed_dict={
+                    model.outputs["sampled_z1"]: flat_fixed_z1s,
+                    model.outputs["sampled_z2"]: flat_trav_z2s,
+                    model.outputs["sampled_z3"]: flat_trav_z3s,
                     model.feed_dict["is_train"]: 0})
     else:
         raise ValueError("invalid which (%s)" % which)
@@ -721,8 +733,9 @@ def _pad_feats(feats, left_pad, right_pad):
             np.tile(feats[-1], [right_pad] + tile_rep_suffix)])
     return feats
 
+#TODO: Determine if/how to modify Z3 as is done here with Z1.
 def _replace_repr(sess, model, inputs, src_repr, tar_repr):
-    Z1, Z2 = _sample_z1_z2_fn(sess, model, inputs)
+    Z1, Z2, Z3 = _sample_z1_z2_z3_fn(sess, model, inputs)
     Z1_mod = Z1 - src_repr[np.newaxis, :] + tar_repr[np.newaxis, :]
-    inputs_mod = _decode_x_mean_fn(sess, model, Z1_mod, Z2)
+    inputs_mod = _decode_x_mean_fn(sess, model, Z1_mod, Z2, Z3)
     return Z1, Z1_mod, Z2, inputs_mod
