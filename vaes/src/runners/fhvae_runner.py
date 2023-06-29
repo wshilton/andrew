@@ -30,6 +30,7 @@ DEFAULT_WRITE_FN = lambda uttid, feats: print("%s\n%s" % (uttid, feats))
 DEFAULT_DUMP_LATENT_OPT = {
         "use_z1": False,
         "use_z2": True,
+        "use_z3": False,
         "use_mean": True,
         "use_logvar": True,
         "utt_left_pad": 0,
@@ -41,8 +42,10 @@ DEFAULT_VIS_FAC_OPT = {
         "n": 1,                 # number of segments drawn from each utt in *_utt_list
         "z1_utt_list": None,    # list of utterance for z1
         "z2_utt_list": None,    # list of utterance for z2
+        "z3_utt_list": None,
         "z1_segs": None,        # ignore `n` and `z1_utt_list`, segments for z1
         "z2_segs": None,        # ignore `n` and `z2_utt_list`, segments for z2
+        "z3_segs": None
         }
 DEFAULT_TRAV_OPT = {
         "n": 5,                 # number of seed segments
