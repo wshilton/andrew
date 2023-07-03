@@ -440,7 +440,6 @@ def traverse(exp_dir, model, dataset, img_dir, opts=DEFAULT_TRAV_OPT):
             seed_utt = dataset.sample_utt_id(opts["n"])
             seed_data, _, _, _ = dataset.sample_item(seed_utt, 1)
 
-        #TODO: Determine how to incorporate traversal in higher dimensions
         trav_z1_grids, trav_z2_grids, trav_z3_grids = _traverse(
                 sess, model, seed_data, opts["k"], opts["trav_range"])
 
@@ -667,7 +666,6 @@ def _traverse(sess, model, seed_data, k, trav_range):
 
     return trav_z1_grids, trav_z2_grids, trav_z3_grids
 
-#TODO: Take a look at how to generalize with added dim.
 def _traverse_dim(sess, model, seed_z1s, seed_z2s, seed_z3s, data_shape, trav_vals, dim, which="z1"):
     n, k = len(seed_z1s), len(trav_vals)
     def gen_flat_trav_and_fixed_lats(seed_lats_to_trav, seed_lats_fixed):
