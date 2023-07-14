@@ -39,6 +39,7 @@ tf.app.flags.DEFINE_string("dataset_conf", "", "path to dataset config")
 tf.app.flags.DEFINE_integer("n_print_steps", 200, "print training diagnostics every N steps")
 
 tf.app.flags.DEFINE_float("alpha_dis", -1, "alpha for discriminative objective")
+tf.app.flags.DEFINE_float("beta_dis", -1, "beta for discriminative objective")
 tf.app.flags.DEFINE_integer("n_latent1", 0, "z1 dimension")
 tf.app.flags.DEFINE_integer("n_latent2", 0, "z2 dimension")
 tf.app.flags.DEFINE_integer("n_latent3", 0, "z3 dimension")
