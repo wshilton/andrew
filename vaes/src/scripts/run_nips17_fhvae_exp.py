@@ -15,8 +15,8 @@ from kaldi_io import BaseFloatVectorWriter as BFVWriter
 from kaldi_io import SequentialBaseFloatVectorReader as SBFVReader
 
 DEFAULT_SET_NAME="uttid"
-DEFAULT_TRAIN_CONF="conf/train/fhvae/e500_p50_lr1e-3_bs256_nbs2000_ad0.cfg"
-DEFAULT_MODEL_CONF="conf/model/fhvae/lstm_2L_256_lat_32_32.cfg"
+DEFAULT_TRAIN_CONF="conf/train/fhvae/e500_p50_lr1e-3_bs256_nbs2000_ad0_bd0.cfg"
+DEFAULT_MODEL_CONF="conf/model/fhvae/lstm_2L_256_lat_32_32_32.cfg"
 
 # flags for all actions
 tf.app.flags.DEFINE_boolean("debug", False, "debugging mode (for training) if True")
@@ -85,6 +85,7 @@ tf.app.flags.DEFINE_string("repl_utt_id_map", "", "")
 tf.app.flags.DEFINE_integer("fac_n", 1, "")
 tf.app.flags.DEFINE_string("fac_z1_spec", "", "")
 tf.app.flags.DEFINE_string("fac_z2_spec", "", "")
+tf.app.flags.DEFINE_string("fac_z3_spec", "", "")
 tf.app.flags.DEFINE_string("fac_wspec", "", "")
 tf.app.flags.DEFINE_string("fac_img_dir", "", "")
 
