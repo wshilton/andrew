@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends\
     python2.7 \
     make
 
-RUN python -m pip install --user -r vaes/requirements.txt --find-links
+RUN python -m pip install --user -r vaes/requirements.txt
 RUN python -m pip install --user notebook
 
 FROM python:2.7 AS build-image
