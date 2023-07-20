@@ -1,6 +1,6 @@
 FROM python:2.7 AS compile-image
 
-RUN apt-get update && apt-get install -y --no-install-recommneds\
+RUN apt-get update && apt-get install -y --no-install-recommends\
     build-essential \
     gcc \
     python2.7 \
