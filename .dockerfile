@@ -6,9 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends\
     python2.7 \
     make
 
+RUN git clone https://github.com/wshilton/andrew.git
 RUN python -m pip install --user -r vaes/requirements.txt
 RUN python -m pip install --user notebook
-RUN git clone https://github.com/wshilton/andrew.git
 
 FROM python:2.7 AS build-image
 COPY --from=compile-image /root/.local /root/.local
