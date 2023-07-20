@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 RUN apt-get update && apt-get install -y \
-    python2.7.6 \
+    python2.7 \
     make
 
 RUN python -m pip install requirements.txt
