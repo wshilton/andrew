@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y \
     python2.7 \
     make
 
-RUN python -m pip install -r vaes/requirements.txt
+RUN python -m pip install -r vaes/requirements.txt --find-links
 RUN python -m pip install notebook
 
 RUN git clone https://github.com/wshilton/andrew.git
