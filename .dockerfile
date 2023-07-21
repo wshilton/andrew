@@ -1,7 +1,6 @@
 FROM python:2.7 AS compile-image
 
-RUN apt install --reinstall software-properties-common && \
-    add-apt-repository multiverse && \
+RUN add-apt-repository multiverse && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
