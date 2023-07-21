@@ -3,8 +3,13 @@ FROM python:2.7 AS compile-image
 RUN apt-get update && apt-get install -y --no-install-recommends\
     build-essential \
     gcc \
+    sox \
+    gfortran \
+    intel-mkl-2018.2-046 \
     python2.7 \
-    make
+    make \
+    ca-certificates
+    
 
 RUN git clone https://github.com/wshilton/andrew.git
 RUN python -m pip install --user -r ./andrew/vaes/requirements.txt
