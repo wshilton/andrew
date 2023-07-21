@@ -1,11 +1,11 @@
 FROM python:2.7 AS compile-image
 
-RUN apt-get update && apt-get install -y --no-install-recommends\
+RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends\
     build-essential \
     gcc \
     sox \
     gfortran \
-    intel-mkl \
+    intel-mkl-full \
     python2.7 \
     make \
     ca-certificates
