@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends\
     gcc \
     sox \
     gfortran \
-    intel-mkl-2018.2-046 \
+    intel-mkl \
     python2.7 \
     make \
     ca-certificates
