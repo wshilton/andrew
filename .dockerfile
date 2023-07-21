@@ -6,7 +6,7 @@ RUN apt-get update && \
     gcc \
     sox \
     gfortran \
-    intel-mkl-full \
+    intel-mkl \
     python2.7 \
     make \
     ca-certificates
