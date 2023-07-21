@@ -1,6 +1,6 @@
 FROM python:2.7 AS compile-image
 
-RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends\
+RUN apt-get update && apt-get install -y --no-install-recommends\
     build-essential \
     gcc \
     sox \
