@@ -27,6 +27,7 @@ ENV PATH=/root/.local/bin:$PATH
 
 CMD git clone https://github.com/wshilton/andrew.git &&\
     cd ./andrew/vaes &&\
+    ln -sT /usr/ssl /etc/ssl &&\
     make all &&\
     cd src &&\
     jupyter notbook --ip 0.0.0.0 --no-browser --allow-root
