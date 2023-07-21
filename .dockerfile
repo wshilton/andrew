@@ -1,6 +1,6 @@
 FROM python:2.7 AS compile-image
 
-RUN sudo apt-add-repository multiverse && \
+RUN apt-add-repository multiverse && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
