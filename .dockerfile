@@ -12,7 +12,7 @@ RUN python -m pip install --user notebook
 
 FROM python:2.7 AS build-image
 COPY --from=compile-image /root/.local /root/.local
-COPY --from=compile-image /tmp /tmp
+COPY --from=compile-image ./andrew ./
 
 ENV PATH=/root/.local/bin:$PATH
 #In conjunction with the following, execute 
