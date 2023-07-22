@@ -7,7 +7,7 @@ RUN apt-get update && \
     software-properties-common && \
     apt-add-repository non-free && \
     apt-get update && \
-    apt-get install -y \
+    apt-get install -qq \
     build-essential \
     gcc \
     sox \
