@@ -1,6 +1,6 @@
 FROM python:2.7 AS compile-image
 
-#TODO: Address intel-mkl not found when building image.
+#TODO: Address intel-mkl prompting even after assume yes.
 #TODO: Address certificate issues during kaldi install.
 RUN apt-get update && \
     apt-get install -y \
