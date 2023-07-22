@@ -3,23 +3,26 @@ FROM python:2.7 AS compile-image
 #TODO: Address certificate issues during kaldi install.
 
 #First authorize non-free material from apt repository,
-#followed by an install of MKL in which we must be particularly forceful about the default
-#and a gentler install of the remaining items.
+#followed by an install of some prereqs. Then install MKL 
+#in which we must be particularly forceful about the default
+#config and then we install python.
 RUN apt-get update && \
     apt-get install -y \
     software-properties-common && \
     apt-add-repository non-free && \
     apt-get update && \
-    yes | DEBIAN_FRONTEND=noninteractive apt-get install -yqq \
-    intel-mkl && \
     apt-get install -y \
     build-essential \
     gcc \
     sox \
     gfortran \
-    python2.7 \
     make \
-    ca-certificates
+    ca-certificates && \
+    yes | DEBIAN_FRONTEND=noninteractive apt-get install -yqq \
+    intel-mkl && \
+    apt-get update && \
+    apt-get install -y \
+    python2.7
 
 #Get the requirements file from the repository
 RUN wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/wshilton/andrew/main/vaes/requirements.txt
