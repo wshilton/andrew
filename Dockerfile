@@ -4,6 +4,9 @@ FROM python:2.7 AS compile-image
 #TODO: Address certificate issues during kaldi install.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    software-properties-common && \
+    apt-add-repository non-free && \
+    apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
     sox \
