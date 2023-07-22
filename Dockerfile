@@ -1,18 +1,22 @@
 FROM python:2.7 AS compile-image
 
-#TODO: Address intel-mkl prompting even after assume yes.
 #TODO: Address certificate issues during kaldi install.
+
+#First authorize non-free material from apt repository,
+#followed by an install of MKL in which we must be particularly forceful about the default
+#and a gentler install of the remaining items.
 RUN apt-get update && \
     apt-get install -y \
     software-properties-common && \
     apt-add-repository non-free && \
     apt-get update && \
-    apt-get install -qq \
+    yes | DEBIAN_FRONTEND=noninteractive apt-get install -yqq \
+    intel-mkl && \
+    apt-get install -y \
     build-essential \
     gcc \
     sox \
     gfortran \
-    intel-mkl \
     python2.7 \
     make \
     ca-certificates
