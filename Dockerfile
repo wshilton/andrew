@@ -6,6 +6,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     software-properties-common && \
     apt-add-repository non-free && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
