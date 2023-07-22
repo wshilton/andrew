@@ -24,7 +24,7 @@ COPY --from=compile-image /root/.local /root/.local
 
 ENV PATH=/root/.local/bin:$PATH
 #In conjunction with the following jupyter command, execute 
-#docker run -it -p 8888:8888 ubuntu:22.04
+#docker run -it -p 8888:8888 imagename:version
 #in order to connect outside container at http://localhost:8888/
 
 #TODO: Address certificate issue in kaldi build. Note linking of ssl files.
