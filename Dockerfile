@@ -3,11 +3,11 @@ FROM python:2.7 AS compile-image
 #TODO: Address intel-mkl not found when building image.
 #TODO: Address certificate issues during kaldi install.
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y \
     software-properties-common && \
     apt-add-repository non-free && \
     apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y \
     build-essential \
     gcc \
     sox \
