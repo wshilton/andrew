@@ -1,4 +1,4 @@
-FROM python:2.7 AS compile-image
+FROM python:2.7 AS image
 
 #TODO: Address certificate issues during kaldi install.
 
@@ -30,9 +30,6 @@ RUN wget --no-check-certificate --content-disposition https://raw.githubusercont
 RUN python -m pip install --user -r ./requirements.txt
 RUN python -m pip install --user notebook
 
-FROM python:2.7 AS build-image
-COPY --from=compile-image /root/.local /root/.local
-
 ENV PATH=/root/.local/bin:$PATH
 #In conjunction with the following jupyter CMD, execute 
 #docker run -it -p 8888:8888 imagename:version
@@ -45,7 +42,6 @@ ENV PATH=/root/.local/bin:$PATH
 
 CMD git clone https://github.com/wshilton/andrew.git &&\
     cd ./andrew/vaes &&\
-    ln -sT /usr/ssl /etc/ssl &&\
     make all &&\
     cd src &&\
     jupyter notbook --ip 0.0.0.0 --no-browser --allow-root
