@@ -33,6 +33,7 @@ RUN python -m pip install --user notebook
 #TODO: The dependency on Kaldi is ideally more suited for handling while compiling the image,
 #unlike the remainder of the repository, which is the subject of active work. So some re-arch
 #is in order.
+#TODO: Kaldi encounters cert errors here.
 RUN git clone https://github.com/wshilton/andrew.git &&\
     cd ./andrew/vaes &&\
     make all
