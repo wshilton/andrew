@@ -4,12 +4,12 @@ FROM python:2.7 AS image
 #followed by an install of some prereqs. Then install MKL 
 #in which we must be particularly forceful about the default
 #config and then we install python. 
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt update && \
+    apt install -y \
     software-properties-common && \
     apt-add-repository non-free && \
-    apt-get update && \
-    apt-get install -y \
+    apt update && \
+    apt install -y \
     build-essential \
     gcc \
     sox \
@@ -18,8 +18,8 @@ RUN apt-get update && \
     ca-certificates && \
     yes | DEBIAN_FRONTEND=noninteractive apt-get install -yqq \
     intel-mkl && \
-    apt-get update && \
-    apt-get install -y \
+    apt update && \
+    apt install -y \
     python2.7
 
 #Get the requirements file from the repository
@@ -27,13 +27,13 @@ RUN wget --content-disposition https://raw.githubusercontent.com/wshilton/andrew
 
 #Install requirements along with jupyter
 RUN python -m pip install --user -r ./requirements.txt
-
 RUN python -m pip install --user notebook
 
 #TODO: The dependency on Kaldi is ideally more suited for handling while compiling the image,
 #unlike the remainder of the repository, which is the subject of active work. So some re-arch
 #is in order.
-#TODO: Kaldi encounters cert errors here.
+#TODO: Wget cannot seem to resolve certs from within the container. Currently
+#implementing a reverse proxy on the host using Caddy.
 RUN git clone https://github.com/wshilton/andrew.git &&\
     cd ./andrew/vaes &&\
     make all
