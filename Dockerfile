@@ -25,7 +25,7 @@ RUN apt-get update && \
     python2.7
 
 #Get the requirements file from the repository
-RUN wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/wshilton/andrew/main/vaes/requirements.txt
+RUN wget --content-disposition https://raw.githubusercontent.com/wshilton/andrew/main/vaes/requirements.txt
 #Install requirements along with jupyter
 RUN python -m pip install --user -r ./requirements.txt
 RUN python -m pip install --user notebook
