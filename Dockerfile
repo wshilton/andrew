@@ -16,7 +16,7 @@ RUN apt update && \
     gfortran \
     make \
     ca-certificates && \
-    yes | DEBIAN_FRONTEND=noninteractive apt-get install -yqq \
+    yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
     intel-mkl && \
     apt update && \
     apt install -y \
