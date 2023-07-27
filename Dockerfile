@@ -14,7 +14,7 @@ RUN apt update && \
     gcc \
     sox \
     gfortran \
-    make \
+    make && \
     yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
     intel-mkl && \
     apt update && \
