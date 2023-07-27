@@ -15,7 +15,6 @@ RUN apt update && \
     sox \
     gfortran \
     make \
-    ca-certificates && \
     yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
     intel-mkl && \
     apt update && \
@@ -38,6 +37,34 @@ RUN git clone https://github.com/wshilton/andrew.git &&\
     cd ./andrew/vaes &&\
     make all
 
+#Various attempts at resolving certificate issue
+#Solution 1. Implement a reverse proxy with Caddy
+#RUN apt install -y debian-keyring debian-archive-keyring apt-transport-https
+#RUN curl -1sLfk 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+#RUN curl -1sLfk 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list
+#RUN apt update
+#RUN apt install -y caddy sudo libnss3-tools
+#RUN sudo setcap cap_net_bind_service=+ep $(which caddy)
+#RUN printf "localhost:80 {\n        reverse_proxy localhost:8080\n}" > ./Caddyfile
+#RUN caddy fmt --overwrite ./Caddyfile
+#RUN caddy start
+#Solution 2. Reroute connects with iptables or nftables.
+#RUN apt install -y iptables sudo
+#RUN echo "/lib/x86_64-linux-gnu/xtables" >> /etc/ld.so.conf.d/x86_64-linux-gnu.conf
+#RUN ldconfig
+#RUN sudo iptables-nft -t nat -A PREROUTING -p tcp ! -s 172.18.0.0/24 -m tcp --dport 80 -j REDIRECT --to-port 8000
+#RUN sudo iptables-nft -t nat -A PREROUTING -p tcp ! -s 172.18.0.0/24 -m tcp --dport 443 -j REDIRECT --to-port 8080
+#RUN apt install -y nftables sudo
+#RUN sudo nft add rule ip nat PREROUTING ip saddr != 172.18.0.0/24 tcp dport 80 counter redirect to :8000
+#RUN sudo nft add rule ip nat PREROUTING ip saddr != 172.18.0.0/24 tcp dport 443 counter redirect to :8080
+#RUN ls /usr/share/ca-certificates
+#RUN update-ca-certificates
+#Solution 3. Override wget with forced no-cert in the make system through a dash alias.
+#RUN echo 'alias wget="wget --invalid-option"' > ./.bashrc && /usr/bin/bash source ./.bashrc
+#RUN cat ./.bashrc
+#RUN echo 'wget' > ./testscript.sh && chmod +x ./testscript.sh && ./testscript.sh
+#RUN ln -sf /bin/bash /bin/sh
+
 ENV PATH=/root/.local/bin:$PATH
 
 #In conjunction with the following jupyter CMD, execute 
@@ -47,5 +74,19 @@ ENV PATH=/root/.local/bin:$PATH
 #docker run -it --mount src="$(pwd)",target=/tmp,type=bind k3_s3
 #TODO: Consider file permissions
 
-CMD cd ./andrew/vaes/src &&\
+CMD apt update && apt install -y ca-certificates && update-ca-certificates &&\
+    git clone https://github.com/wshilton/andrew.git &&\
+    cd ./andrew/vaes &&\
+    make all &&\
+    cd ./andrew/vaes/src &&\
     jupyter notbook --ip 0.0.0.0 --no-browser --allow-root
+
+CMD apt update &&\
+    apt install -y \
+    ca-certificates && \
+    update-ca-certificates && \
+    #printf "localhost:80 {\n        reverse_proxy localhost:8000\n}\n\n localhost:443 {\n        reverse_proxy localhost:8080\n}" > ./Caddyfile &&\
+    #caddy fmt --overwrite ./Caddyfile &&\
+    #caddy start &&\
+    caddy reverse-proxy --from :443 --to https://localhost:8080 && \
+    wget -nv -T 10 -t 1 http://www.openfst.org/twiki/pub/FST/FstDownload/openfst-1.7.2.tar.gz 
