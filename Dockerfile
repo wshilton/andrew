@@ -64,7 +64,15 @@ RUN git clone https://github.com/wshilton/andrew.git &&\
 #RUN cat ./.bashrc
 #RUN echo 'wget' > ./testscript.sh && chmod +x ./testscript.sh && ./testscript.sh
 #RUN ln -sf /bin/bash /bin/sh
-
+#TODO: Integrate Solution 4 into this build.
+#Solution 4. A simpler reverse proxy using node.js. This seems to work.
+#openssl req -newkey rsa:2048 -nodes -keyout key -x509 -sha256 -days 3650 -subj /CN=localhost -out crt
+#FROM node:lts-alpine
+#RUN  echo "let rf=require('fs').readFileSync; require('https').createServer({key:rf('/app/key'),cert:rf('/app/crt')},(req,res)=>{res.end('yay! \n')}).listen(443); console.log('ready \n')" > ./server.js
+#CMD node server.js& \
+#    wget -nv -T 10 -t 1 http://www.openfst.org/twiki/pub/FST/FstDownload/openfst-1.7.2.tar.gz && fg
+#run container with -ip 443:443 -v $PWD:/app
+    
 ENV PATH=/root/.local/bin:$PATH
 
 #In conjunction with the following jupyter CMD, execute 
