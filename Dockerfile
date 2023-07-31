@@ -60,8 +60,7 @@ RUN /usr/bin/python2.7 -m pip install --user notebook
 #is in order.
 #TODO: Wget cannot seem to resolve certs from within the container. Currently
 #implementing a reverse proxy on the host using Caddy.
-RUN printf "let rf=require('fs').readFileSync; require('https').createServer({key:rf('/app/key'),cert:rf('/app/crt')},(req,res)=>{res.end('yay! \n')}).listen(443); console.log('ready \n')" > ./server.js &&\
-    node server.js & \
+RUN node /app/server.js & \
     git clone https://github.com/wshilton/andrew.git &&\
     cd ./andrew/vaes &&\
     make all
