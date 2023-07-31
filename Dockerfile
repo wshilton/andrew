@@ -1,3 +1,27 @@
+#Docker installation
+#sudo apt-get update
+#sudo apt-get install ca-certificates curl gnupg
+#sudo install -m 0755 -d /etc/apt/keyrings
+#curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+#sudo chmod a+r /etc/apt/keyrings/docker.gpg
+#echo \
+#  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+#  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+#  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+#sudo apt-get update
+#sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+#sudo docker run hello-world
+#Create ssl key for container's reverse proxy
+#openssl req -newkey rsa:2048 -nodes -keyout key -x509 -sha256 -days 3650 -subj /CN=localhost -out crt
+#Write instructions for reverse proxy to file
+#echo "let rf=require('fs').readFileSync; require('https').createServer({key:rf('/app/key'),cert:rf('/app/crt')},(req,res)=>{res.end('yay! \n')}).listen(443); console.log('ready \n')" > ./server.js
+
+#Image building
+#sudo docker build -t andrew1.0 .
+
+#Running container
+#sudo docker run -i -p 443:443 -p 8888:8888 -v $PWD:/app andrew:1.0
+
 FROM node:bullseye
 
 #First authorize non-free material from apt repository,
