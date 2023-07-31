@@ -111,4 +111,4 @@ ENV PATH=/root/.local/bin:$PATH
 #TODO: Consider file permissions
 
 CMD cd ./andrew/vaes/src &&\
-    jupyter notbook --ip 0.0.0.0 --no-browser --allow-root
+    jupyter notebook --ip 0.0.0.0 --no-browser --allow-root
