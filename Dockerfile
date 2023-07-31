@@ -1,4 +1,4 @@
-FROM python:2.7 AS image
+FROM node:bullseye
 
 #First authorize non-free material from apt repository,
 #followed by an install of some prereqs. Then install MKL 
@@ -23,17 +23,22 @@ RUN apt update && \
 
 #Get the requirements file from the repository
 RUN wget --content-disposition https://raw.githubusercontent.com/wshilton/andrew/main/vaes/requirements.txt
+#Get pip
+RUN wget --content-disposition https://bootstrap.pypa.io/pip/2.7/get-pip.py
 
-#Install requirements along with jupyter
-RUN python -m pip install --user -r ./requirements.txt
-RUN python -m pip install --user notebook
+#Install pip and the requirements along with jupyter
+RUN /usr/bin/python2.7 get-pip.py
+RUN /usr/bin/python2.7 -m pip install --user -r ./requirements.txt
+RUN /usr/bin/python2.7 -m pip install --user notebook
 
 #TODO: The dependency on Kaldi is ideally more suited for handling while compiling the image,
 #unlike the remainder of the repository, which is the subject of active work. So some re-arch
 #is in order.
 #TODO: Wget cannot seem to resolve certs from within the container. Currently
 #implementing a reverse proxy on the host using Caddy.
-RUN git clone https://github.com/wshilton/andrew.git &&\
+RUN printf "let rf=require('fs').readFileSync; require('https').createServer({key:rf('/app/key'),cert:rf('/app/crt')},(req,res)=>{res.end('yay! \n')}).listen(443); console.log('ready \n')" > ./server.js &&\
+    node server.js & \
+    git clone https://github.com/wshilton/andrew.git &&\
     cd ./andrew/vaes &&\
     make all
 
@@ -82,19 +87,5 @@ ENV PATH=/root/.local/bin:$PATH
 #docker run -it --mount src="$(pwd)",target=/tmp,type=bind k3_s3
 #TODO: Consider file permissions
 
-CMD apt update && apt install -y ca-certificates && update-ca-certificates &&\
-    git clone https://github.com/wshilton/andrew.git &&\
-    cd ./andrew/vaes &&\
-    make all &&\
-    cd ./andrew/vaes/src &&\
+CMD cd ./andrew/vaes/src &&\
     jupyter notbook --ip 0.0.0.0 --no-browser --allow-root
-
-CMD apt update &&\
-    apt install -y \
-    ca-certificates && \
-    update-ca-certificates && \
-    #printf "localhost:80 {\n        reverse_proxy localhost:8000\n}\n\n localhost:443 {\n        reverse_proxy localhost:8080\n}" > ./Caddyfile &&\
-    #caddy fmt --overwrite ./Caddyfile &&\
-    #caddy start &&\
-    caddy reverse-proxy --from :443 --to https://localhost:8080 && \
-    wget -nv -T 10 -t 1 http://www.openfst.org/twiki/pub/FST/FstDownload/openfst-1.7.2.tar.gz 
