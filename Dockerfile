@@ -17,7 +17,7 @@
 #echo "let rf=require('fs').readFileSync; require('https').createServer({key:rf('/app/key'),cert:rf('/app/crt')},(req,res)=>{res.end('yay! \n')}).listen(443); console.log('ready \n')" > ./server.js
 
 #Image building
-#sudo docker build -t andrew1.0 .
+#sudo docker build -t andrew1.0 . > build.log 2>&1
 
 #Running container
 #sudo docker run -i -p 443:443 -p 8888:8888 -v $PWD:/app andrew:1.0
@@ -58,10 +58,7 @@ RUN /usr/bin/python2.7 -m pip install --user notebook
 #TODO: The dependency on Kaldi is ideally more suited for handling while compiling the image,
 #unlike the remainder of the repository, which is the subject of active work. So some re-arch
 #is in order.
-#TODO: Wget cannot seem to resolve certs from within the container. Currently
-#implementing a reverse proxy on the host using Caddy.
-RUN node /app/server.js & \
-    git clone https://github.com/wshilton/andrew.git &&\
+RUN git clone https://github.com/wshilton/andrew.git &&\
     cd ./andrew/vaes &&\
     make all
 
@@ -110,5 +107,6 @@ ENV PATH=/root/.local/bin:$PATH
 #docker run -it --mount src="$(pwd)",target=/tmp,type=bind k3_s3
 #TODO: Consider file permissions
 
-CMD cd ./andrew/vaes/src &&\
+CMD node /app/server.js& \
+    cd ./andrew/vaes/src &&\
     jupyter notebook --ip 0.0.0.0 --no-browser --allow-root
