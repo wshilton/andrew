@@ -45,6 +45,8 @@ RUN apt update && \
     apt install -y \
     python2.7
 
+#TODO: Install graphics drivers
+
 #Get the requirements file from the repository
 RUN wget --content-disposition https://raw.githubusercontent.com/wshilton/andrew/main/vaes/requirements.txt
 #Get pip
