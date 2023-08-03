@@ -1,6 +1,6 @@
 #Docker installation
 #sudo apt-get update
-#sudo apt-get install ca-certificates curl gnupg
+#sudo apt-get install -y ca-certificates curl gnupg
 #sudo install -m 0755 -d /etc/apt/keyrings
 #curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 #sudo chmod a+r /etc/apt/keyrings/docker.gpg
@@ -9,7 +9,7 @@
 #  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
 #  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 #sudo apt-get update
-#sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+#sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 #sudo docker run hello-world
 #Create ssl key for container's reverse proxy
 #openssl req -newkey rsa:2048 -nodes -keyout key -x509 -sha256 -days 3650 -subj /CN=localhost -out crt
@@ -38,7 +38,13 @@ RUN apt update && \
     gcc \
     sox \
     gfortran \
-    make && \
+    make \
+    zlib1g-dev \
+    automake \
+    autoconf \
+    unzip \
+    libtool \
+    subversion && \
     yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
     intel-mkl && \
     apt update && \
