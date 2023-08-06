@@ -36,7 +36,7 @@ RUN apt update && \
     unzip \
     libtool \
     subversion \
-    python-dev && \
+    python-dev-is-python3 && \
     yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
     intel-mkl && \
     apt update && \
