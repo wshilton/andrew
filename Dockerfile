@@ -51,7 +51,7 @@ RUN wget --content-disposition https://raw.githubusercontent.com/wshilton/andrew
 #Get pip
 RUN wget --content-disposition https://bootstrap.pypa.io/pip/2.7/get-pip.py
 
-RUN echo -e '#!/bin/bash\n/usr/bin/python2.7' > /usr/bin/python && \
+RUN printf '#!/bin/bash\n/usr/bin/python2.7\n' > /usr/bin/python && \
     chmod +x /usr/bin/python
 
 #Install pip and the requirements along with jupyter
