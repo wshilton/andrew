@@ -21,27 +21,28 @@ FROM buildpack-deps:bookworm
 #config and then we install python. 
 RUN apt update && \
     apt install -y \
-    software-properties-common && \
+        software-properties-common && \
     apt-add-repository non-free && \
     apt update && \
     apt install -y \
-    build-essential \
-    gcc \
-    sox \
-    gfortran \
-    make \
-    zlib1g-dev \
-    automake \
-    autoconf \
-    unzip \
-    libtool \
-    subversion \
-    python-dev-is-python3 && \
+        build-essential \
+        gcc \
+        sox \
+        gfortran \
+        make \
+        zlib1g-dev \
+        automake \
+        autoconf \
+        unzip \
+        libtool \
+        subversion \
+        python-dev-is-python3 && \
+    apt update && \
     yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
-    intel-mkl && \
+        intel-mkl && \
     apt update && \
     apt install -y \
-    python2.7
+        python2.7
 
 #TODO: Install graphics drivers
 
