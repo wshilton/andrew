@@ -1,5 +1,5 @@
 all: kaldi kaldi_python
-.PHONY: kaldi_python kaldi_d1e1e3b kaldi kaldi_github
+.PHONY: kaldi_python kaldi kaldi_github
 
 kaldi: kaldi_github
 	cp -r kaldi_github kaldi
