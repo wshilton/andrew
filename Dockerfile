@@ -35,7 +35,8 @@ RUN apt update && \
     autoconf \
     unzip \
     libtool \
-    subversion && \
+    subversion \
+    python-dev && \
     yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
     intel-mkl && \
     apt update && \
