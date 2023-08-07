@@ -3,8 +3,8 @@ all: kaldi kaldi_python
 
 kaldi: kaldi_github
 	cp -r kaldi_github kaldi
-	cd kaldi/tools; ./extras/check_dependencies.sh; $(MAKE) all -j 8
-	cd kaldi/src; ./configure --shared; $(MAKE) depend -j 8; $(MAKE) all -j 8
+	cd kaldi/tools; ./extras/check_dependencies.sh; $(MAKE) all -j 4
+	cd kaldi/src; ./configure --shared; $(MAKE) depend -j 8; $(MAKE) all -j 4
 	
 kaldi_github:
 	git clone https://github.com/kaldi-asr/kaldi.git kaldi_github
