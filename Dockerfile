@@ -22,7 +22,7 @@ FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
 RUN apt update && \
     apt install -y \
         software-properties-common && \
-    apt-add-repository non-free && \
+    apt-add-repository multiverse && \
     apt update && \
     apt install -y \
         build-essential \
