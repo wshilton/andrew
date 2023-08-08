@@ -46,7 +46,7 @@ RUN apt update && \
         vim \
         python-is-python2 && \
     apt update && \
-    yes | apt install -yqq \
+    yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
         intel-mkl && \
     rm -rf /var/lib/apt/lists/*
 
