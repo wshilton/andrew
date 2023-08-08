@@ -42,7 +42,8 @@ RUN apt update && \
         intel-mkl && \
     apt update && \
     apt install -y \
-        python2.7
+        python2.7 \
+        python-is-python2
 
 #TODO: Install graphics drivers
 
@@ -50,9 +51,6 @@ RUN apt update && \
 RUN wget --content-disposition https://raw.githubusercontent.com/wshilton/andrew/main/vaes/requirements.txt
 #Get pip
 RUN wget --content-disposition https://bootstrap.pypa.io/pip/2.7/get-pip.py
-
-RUN printf '#!/bin/bash\n/usr/bin/python2.7\n' > /usr/bin/python && \
-    chmod +x /usr/bin/python
 
 #Install pip and the requirements along with jupyter
 RUN python get-pip.py
