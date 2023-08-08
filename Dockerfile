@@ -26,26 +26,29 @@ RUN apt update && \
     apt update && \
     apt install -y \
         build-essential \
-        gcc \
-        sox \
-        gfortran \
+        g++ \
         make \
-        zlib1g-dev \
         automake \
-        autoconf \
+        bzip2 \
         unzip \
+        wget \
+        sox \
         libtool \
+        git \
         subversion \
-        python-dev && \
-    apt update && \
-    yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
-        intel-mkl && \
-    apt update && \
-    apt install -y \
         python2.7 \
-        python-is-python2
-
-#TODO: Install graphics drivers
+        python3 \
+        zlib1g-dev \
+        ca-certificates \
+        gfortran \
+        patch \
+        ffmpeg \
+        vim \
+        python-is-python2 && \
+    apt update && \
+    yes | apt install -yqq \
+        intel-mkl && \
+    rm -rf /var/lib/apt/lists/*
 
 #Get the requirements file from the repository
 RUN wget --content-disposition https://raw.githubusercontent.com/wshilton/andrew/main/vaes/requirements.txt
