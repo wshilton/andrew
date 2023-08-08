@@ -8,7 +8,7 @@
 #sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 #Image building
-#sudo docker build -t andrew1.0 . > build.log 2>&1
+#sudo docker build --progress=plain -t andrew:1.0 . > build.log 2>&1
 
 #Running container
 #sudo docker run -i -p 8888:8888 andrew:1.0
