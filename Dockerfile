@@ -14,6 +14,8 @@
 #sudo docker run -i -p 8888:8888 andrew:1.0
 
 FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
+#Kaldi has docker images, but not in support of ubuntu22.04. Consider pulling appropriate components into Kaldi.
+#This would subsume Hsu's custom make of Kaldi, resulting in slight rearch.
 
 #First authorize non-free material from apt repository,
 #followed by an install of some prereqs. Then install MKL 
