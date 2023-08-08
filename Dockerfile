@@ -43,13 +43,17 @@ RUN apt update && \
         gfortran \
         patch \
         ffmpeg \
-        vim && \
+        vim \
+        python2-dev \
+        python3-dev && \
     apt update && \
     yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
         intel-mkl && \
     rm -rf /var/lib/apt/lists/*
 
 RUN ln -s /usr/bin/python2.7 /usr/bin/python
+
+#TODO: Add boost libraries!
 
 #Get the requirements file from the repository
 RUN wget --content-disposition https://raw.githubusercontent.com/wshilton/andrew/main/vaes/requirements.txt
