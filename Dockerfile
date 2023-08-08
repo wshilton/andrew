@@ -13,7 +13,7 @@
 #Running container
 #sudo docker run -i -p 8888:8888 andrew:1.0
 
-FROM buildpack-deps:bookworm
+FROM buildpack-deps:bullseye
 
 #First authorize non-free material from apt repository,
 #followed by an install of some prereqs. Then install MKL 
