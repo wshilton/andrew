@@ -69,7 +69,7 @@ RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
     wget https://raw.githubusercontent.com/wshilton/andrew/main/vaes/requirements.txt && \
     python get-pip.py && \
     python -m pip install --user -r ./requirements.txt && \
-    python -m pip install --user notebook
+    python -m pip install --user notebook boost
 
 RUN apt update && \
     apt install -y \
