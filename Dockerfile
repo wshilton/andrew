@@ -76,19 +76,14 @@ RUN apt update && \
     libboost-all-dev
 
 #TODO: Investigate binding issues in kaldi-python wrappers.
+#Kaldi-python has seen no activity for about 6 years. An active alternative
+#is https://github.com/pykaldi/pykaldi#.
 
 RUN git clone https://github.com/janchorowski/kaldi-python.git /opt/kaldi-python && \
     cd /opt/kaldi-python && \
     KALDI_ROOT=/opt/kaldi make all -j $(nproc) && \
     find /opt/kaldi-python  -type f \( -name "*.o" -o -name "*.la" -o -name "*.a" \) -exec rm {} \; && \
     rm -rf /opt/kaldi-python/.git
-
-#TODO: The dependency on Kaldi is ideally more suited for handling while compiling the image,
-#unlike the remainder of the repository, which is the subject of active work. So some re-arch
-#is in order.
-#RUN git clone https://github.com/wshilton/andrew.git &&\
-#    cd ./andrew/vaes &&\
-#    make all
     
 #ENV PATH=/root/.local/bin:$PATH
 
