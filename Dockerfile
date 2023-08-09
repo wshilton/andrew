@@ -71,6 +71,10 @@ RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
     python -m pip install --user -r ./requirements.txt && \
     python -m pip install --user notebook
 
+RUN apt update && \
+    apt install -y \
+    libboost-all-dev
+
 RUN git clone https://github.com/janchorowski/kaldi-python.git /opt/kaldi-python && \
     cd /opt/kaldi-python && \
     KALDI_ROOT=/opt/kaldi make all -j $(nproc) && \
