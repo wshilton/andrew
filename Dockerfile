@@ -65,6 +65,12 @@ RUN git clone --depth 1 https://github.com/kaldi-asr/kaldi.git /opt/kaldi && \
     find /opt/kaldi  -type f \( -name "*.o" -o -name "*.la" -o -name "*.a" \) -exec rm {} \; && \
     rm -rf /opt/kaldi/.git
 
+RUN git clone https://github.com/janchorowski/kaldi-python.git /opt/kaldi-python && \
+    cd /opt/kaldi-python && \
+    KALDI_ROOT=/opt/kaldi make all -j $(nproc) && \
+    find /opt/kaldi-python  -type f \( -name "*.o" -o -name "*.la" -o -name "*.a" \) -exec rm {} \; && \
+    rm -rf /opt/kaldi-python/.git
+    
 #Get the requirements file from the repository
 #RUN wget --content-disposition https://raw.githubusercontent.com/wshilton/andrew/main/vaes/requirements.txt
 #Get pip
