@@ -78,8 +78,10 @@ RUN apt update && \
 #TODO: Investigate binding issues in kaldi-python wrappers.
 #Kaldi-python has seen no activity for about 6 years. An active alternative
 #is https://github.com/pykaldi/pykaldi#.
+#A type change, among other things, in Kaldi is responsible for a failed binding.
+#Forking kaldi-python.
 
-RUN git clone https://github.com/janchorowski/kaldi-python.git /opt/kaldi-python && \
+RUN git clone https://github.com/wshilton/kaldi-python.git /opt/kaldi-python && \
     cd /opt/kaldi-python && \
     KALDI_ROOT=/opt/kaldi make all -j $(nproc) && \
     find /opt/kaldi-python  -type f \( -name "*.o" -o -name "*.la" -o -name "*.a" \) -exec rm {} \; && \
