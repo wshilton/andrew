@@ -75,6 +75,8 @@ RUN apt update && \
     apt install -y \
     libboost-all-dev
 
+#TODO: Investigate binding issues in kaldi-python wrappers.
+
 RUN git clone https://github.com/janchorowski/kaldi-python.git /opt/kaldi-python && \
     cd /opt/kaldi-python && \
     KALDI_ROOT=/opt/kaldi make all -j $(nproc) && \
