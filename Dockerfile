@@ -45,9 +45,7 @@ RUN apt update && \
         gfortran \
         patch \
         ffmpeg \
-        vim \
-        python2-dev \
-        python3-dev && \
+        vim && \
     apt update && \
     yes | DEBIAN_FRONTEND=noninteractive apt install -yqq \
         intel-mkl && \
@@ -73,7 +71,9 @@ RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
 
 RUN apt update && \
     apt install -y \
-    libboost-all-dev
+    libboost-all-dev \
+    python2-dev \
+    python3-dev
 
 #TODO: Investigate binding issues in kaldi-python wrappers.
 #Kaldi-python has seen no activity for about 6 years. An active alternative
