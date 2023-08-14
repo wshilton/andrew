@@ -60,7 +60,6 @@ RUN git clone --depth 1 https://github.com/kaldi-asr/kaldi.git /opt/kaldi && \
     ./configure --shared --use-cuda && \
     make depend -j $(nproc) && \
     make -j $(nproc) && \
-    find /opt/kaldi  -type f \( -name "*.o" -o -name "*.la" -o -name "*.a" \) -exec rm {} \; && \
     rm -rf /opt/kaldi/.git
 
 RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
@@ -84,7 +83,6 @@ RUN apt update && \
 RUN git clone https://github.com/wshilton/kaldi-python.git /opt/kaldi-python && \
     cd /opt/kaldi-python && \
     KALDI_ROOT=/opt/kaldi make all -j $(nproc) && \
-    find /opt/kaldi-python  -type f \( -name "*.o" -o -name "*.la" -o -name "*.a" \) -exec rm {} \; && \
     rm -rf /opt/kaldi-python/.git
     
 #ENV PATH=/root/.local/bin:$PATH
