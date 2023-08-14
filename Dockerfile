@@ -70,15 +70,11 @@ RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
 
 RUN apt update && \
     apt install -y \
-    libboost-all-dev \
+    libboost-python-dev \
     python2-dev \
     python3-dev
 
-#TODO: Investigate binding issues in kaldi-python wrappers.
-#Kaldi-python has seen no activity for about 6 years. An active alternative
-#is https://github.com/pykaldi/pykaldi#.
-#A type change, among other things, in Kaldi is responsible for a failed binding.
-#Forking kaldi-python.
+RUN ln -s "/usr/lib/x86_64-linux-gnu/libboost_python310.so" /usr/lib/x86_64-linux-gnu/libboost_python.so
 
 RUN git clone https://github.com/wshilton/kaldi-python.git /opt/kaldi-python && \
     cd /opt/kaldi-python && \
